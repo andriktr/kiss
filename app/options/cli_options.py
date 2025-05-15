@@ -51,8 +51,12 @@ def scan_level_option():
         "--scan-level",
         type=click.Choice(["basic", "full"], case_sensitive=False),
         default="basic",
-        help=("Set the scan level (basic or full)."           
-        ),
+        help=(
+            "Set the scan level (basic or full)."
+            "Basic scan will show vulnerabilities table summary. Which will contain image name and count of vulnerabilities for each severity level."
+            "Full scan will show vulnerabilities table summary and a separate table for each image with detailed information its vulnerabilities."
+            "Defaults to basic scan level."           
+            ),
     )
     
 def severity_option():

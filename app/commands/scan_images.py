@@ -2,7 +2,7 @@ import subprocess
 import json
 import click
 from tabulate import tabulate
-from app.utils.other_utils import parse_namespaces, configure_logging, parse_vulnerabilities, display_basic_vulnerability_table_summary
+from app.utils.other_utils import parse_namespaces, configure_logging, parse_vulnerabilities, display_basic_vulnerability_table_summary, parse_vulnerabilities_full, display_full_vulnerability_table_summary
 from app.utils.trivy_utils import run_trivy_scan, run_trivy_scans_in_parallel, trivy_db_update
 from app.options.cli_options import (
     namespace_option,
@@ -69,26 +69,41 @@ def scan_images(kubeconfig, all_namespaces, namespace, selector, log_level, scan
     # Process namespaces in parallel
     with ThreadPoolExecutor(max_workers=parallel_namespaces) as executor:
         future_to_namespace = {
-            executor.submit(process_namespace, ns, severity, ignore_unfixed, pkg_types, scanners, parallel_images, show_vulnerable_only): ns
+            executor.submit(process_namespace, ns, severity, ignore_unfixed, pkg_types, scanners, parallel_images, show_vulnerable_only, scan_level): ns
             for ns in namespaces
         }
-
+        
         for future in as_completed(future_to_namespace):
             ns = future_to_namespace[future]
             try:
-                namespace_summary = future.result()
-                if not namespace_summary:
-                    continue
-                else:                                
+                namespace_summary, namespace_detailed_summary = future.result()
+                if namespace_summary:
                     click.echo(f"\n\033[1;32mResults for namespace: {ns}\033[0m")
                     display_basic_vulnerability_table_summary(namespace_summary, sort_by_severity)
+                if scan_level == "full" and namespace_detailed_summary:
+                    click.echo(f"\n\033[1;32mDetailed results for namespace: {ns}\033[0m")
+                    display_full_vulnerability_table_summary(namespace_detailed_summary, sort_by_severity)
             except Exception as e:
                 click.echo(f"\033[1;31mError processing namespace {ns}: {e}\033[0m")
+        # for future in as_completed(future_to_namespace):
+        #     ns = future_to_namespace[future]
+        #     try:
+        #         namespace_summary = future.result()
+        #         if not namespace_summary:
+        #             continue
+        #         else:                                
+        #             click.echo(f"\n\033[1;32mResults for namespace: {ns}\033[0m")
+        #             display_basic_vulnerability_table_summary(namespace_summary, sort_by_severity)
+        #             if scan_level == "full":
+        #                 click.echo(f"\n\033[1;32mDetailed results for namespace: {ns}\033[0m")
+        #                 display_full_vulnerability_table_summary(namespace_detailed_summary, sort_by_severity)
+        #     except Exception as e:
+        #         click.echo(f"\033[1;31mError processing namespace {ns}: {e}\033[0m")
 
-def process_namespace(namespace, severity, ignore_unfixed, pkg_types, scanners, parallel_images, show_vulnerable_only):
+def process_namespace(namespace, severity, ignore_unfixed, pkg_types, scanners, parallel_images, show_vulnerable_only, scan_level):
     """
     Process a single namespace: get images, run Trivy scans, and parse vulnerabilities.
-    
+
     Args:
         namespace (str): The namespace to process.
         severity (str): Comma-separated severity levels.
@@ -96,13 +111,14 @@ def process_namespace(namespace, severity, ignore_unfixed, pkg_types, scanners, 
         pkg_types (str): Comma-separated package types to scan.
         scanners (str): Comma-separated scanners to use.
         parallel_images (int): Number of images to scan in parallel.
-        
+        show_vulnerable_only (bool): Whether to show only vulnerable images.
+        scan_level (str, optional): Scan level, e.g., "full" for detailed summary.
+
     Returns:
-        list: A summary of vulnerabilities for the namespace.
+        tuple: (namespace_summary, namespace_detailed_summary or None)
     """
     images = get_unique_images_in_namespace(namespace)
 
-    # Run Trivy scans for all images in the namespace
     # Prepare a list of images to scan, skipping already scanned ones
     images_to_scan = []
     for image in images:
@@ -118,11 +134,14 @@ def process_namespace(namespace, severity, ignore_unfixed, pkg_types, scanners, 
         for image, result in scan_results.items():
             scanned_images_cache[image] = result
 
-    # Parse vulnerabilities and prepare a summary
+    # Parse vulnerabilities and prepare summaries
     namespace_summary = []
+    namespace_detailed_summary = [] if scan_level == "full" else None
     for image in images:
         with cache_lock:
             trivy_output = scanned_images_cache.get(image)
         if trivy_output:
             namespace_summary.extend(parse_vulnerabilities(image, trivy_output, show_vulnerable_only))
-    return namespace_summary
+            if scan_level == "full":
+                namespace_detailed_summary.extend(parse_vulnerabilities_full(image, trivy_output, show_vulnerable_only))
+    return namespace_summary, namespace_detailed_summary

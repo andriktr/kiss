@@ -58,8 +58,7 @@ def image_list_table_output(namespace, images):
     table_data = [[i + 1, image] for i, image in enumerate(images)]
     table_headers = ["#", "Image"]
     # Print table output
-    print(tabulate(table_data, headers=table_headers, tablefmt="fancy_grid", showindex=False))
-    
+    print(tabulate(table_data, headers=table_headers, tablefmt="fancy_grid", showindex=False))   
 
 def parse_vulnerabilities(image_name, trivy_output, show_vulnerable_only=False):
     """
@@ -101,9 +100,7 @@ def parse_vulnerabilities(image_name, trivy_output, show_vulnerable_only=False):
             )
 
     return results
-
-    
-
+  
 def sort_by_severity_type(table_data):
     """
     Sort the vulnerability summary by severity type.
@@ -122,7 +119,6 @@ def sort_by_severity_type(table_data):
         reverse=True,
     )
     return sorted_summary
-
 
 def display_basic_vulnerability_table_summary(summary, sort_by_severity):
     """
@@ -147,4 +143,77 @@ def display_basic_vulnerability_table_summary(summary, sort_by_severity):
         summary = table_data
         print(tabulate(summary, headers=headers, tablefmt="fancy_grid", showindex=False))
 
-    
+def parse_vulnerabilities_full(image_name, trivy_output, show_vulnerable_only=False):
+    """
+    Parse the Trivy JSON output to extract detailed vulnerability information.
+
+    Args:
+        image_name (str): Name of the image being analyzed.
+        trivy_output (dict): JSON output from Trivy.
+
+    Returns:
+        list: A list of detailed vulnerability information for the image.
+    """
+    results = []
+    if not trivy_output or "Results" not in trivy_output:
+        return results
+
+    for result in trivy_output["Results"]:
+        vulnerabilities = result.get("Vulnerabilities", [])
+        for vuln in vulnerabilities:
+            severity = vuln.get("Severity", "").upper()
+            if not show_vulnerable_only or severity != "UNKNOWN":
+                results.append(
+                    [
+                        image_name,
+                        severity,
+                        vuln.get("VulnerabilityID", ""),
+                        vuln.get("PkgName", ""),
+                        vuln.get("InstalledVersion", ""),
+                        vuln.get("FixedVersion", ""),
+                        vuln.get("PrimaryURL", ""),
+                    ]
+                )
+    return results
+
+def sort_by_severity_type_full(table_data):
+    """
+    Sort the detailed vulnerability summary by severity type, with CRITICAL first,
+    then HIGH, MEDIUM, LOW, UNKNOWN, and then by other columns.
+    """
+    severity_order = {"CRITICAL": 0, "HIGH": 1, "MEDIUM": 2, "LOW": 3, "UNKNOWN": 4}
+    sorted_summary = sorted(
+        table_data,
+        key=lambda x: (
+            severity_order.get(x[2], 99),  # x[2] is Severity
+            x[3],  # Vulnerability ID
+            x[4],  # Package Name
+            x[5],  # Installed Version
+            x[6],  # Fixed Version
+        )
+    )
+    return sorted_summary
+
+def display_full_vulnerability_table_summary(summary, sort_by_severity):
+    """
+    Display the detailed vulnerability summary as a table.
+    """
+    headers = [
+        "#",
+        "Image",
+        "Severity",
+        "Vulnerability ID",
+        "Package Name",
+        "Installed Version",
+        "Fixed Version",
+        "Primary URL",
+    ]
+    table_data = [[i + 1] + row for i, row in enumerate(summary)]
+    if sort_by_severity:
+        sorted_summary = sort_by_severity_type_full(table_data)
+        # reindex the sorted summary
+        sorted_summary = [[i + 1] + row[1:] for i, row in enumerate(sorted_summary)]
+        print(tabulate(sorted_summary, headers=headers, tablefmt="fancy_grid", showindex=False))
+    else:
+        summary = table_data
+        print(tabulate(table_data, headers=headers, tablefmt="fancy_grid", showindex=False))
