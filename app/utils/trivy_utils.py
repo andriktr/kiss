@@ -3,7 +3,14 @@ import subprocess
 import click
 import logging
 import time
+import shutil
+
 from concurrent.futures import ThreadPoolExecutor, as_completed
+
+def look_for_trivy():
+    if shutil.which("trivy") is None:
+        click.echo("\033[1;31mError: Trivy is not installed or not in your PATH. Please install Trivy: https://aquasecurity.github.io/trivy/\033[0m")
+        return
 
 def run_trivy_scan(image_name, severity, ignore_unfixed, pkg_types, scanners, parallel_images):
     """

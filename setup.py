@@ -1,16 +1,26 @@
 from setuptools import setup, find_packages
+from setuptools import setup, find_packages
 
 setup(
-    name="kiss-cli",
-    version="1.0.0",
-    packages=find_packages(),  # Automatically finds the `kiss` package
+    name="kiss",
+    version="0.1.0",
+    packages=find_packages(),  # This will find 'app' and its submodules
     install_requires=[
         "click",
         "kubernetes",
+        "subprocess",
+        "json",
+        "tabulate",
+        "shutil",
+        "logging",
+        "sys",
+        "time",
+        "concurrent.futures",
+        "threading",
     ],
     entry_points={
         "console_scripts": [
-            "kiss=kiss.kiss:main", # Entry point for the CLI
+            "kiss=app.main:main",
         ],
     },
     author="Andrej Trusevic",

@@ -37,12 +37,12 @@ class CustomGroup(click.Group):
     cls=CustomGroup,  # Use the custom group class
     context_settings=dict(help_option_names=["-h", "--help"])
 )
-def kiss():
+def main():
     pass
 
 # Add the subcommands to the main group
-kiss.add_command(show_images)
-kiss.add_command(scan_images)
+main.add_command(show_images)
+main.add_command(scan_images)
 
 if __name__ == "__main__":
-    kiss()
+    main()

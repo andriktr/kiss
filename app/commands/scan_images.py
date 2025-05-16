@@ -1,9 +1,10 @@
 import subprocess
 import json
 import click
+import shutil
 from tabulate import tabulate
 from app.utils.other_utils import parse_namespaces, configure_logging, parse_vulnerabilities, display_basic_vulnerability_table_summary, parse_vulnerabilities_full, display_full_vulnerability_table_summary
-from app.utils.trivy_utils import run_trivy_scan, run_trivy_scans_in_parallel, trivy_db_update
+from app.utils.trivy_utils import run_trivy_scan, run_trivy_scans_in_parallel, trivy_db_update, look_for_trivy
 from app.options.cli_options import (
     namespace_option,
     selector_option,
@@ -23,6 +24,7 @@ from app.options.cli_options import (
 from app.utils.kubernetes_utils import load_kube_config, get_unique_images_in_namespace
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from threading import Lock
+
 
 # Global cache for scanned images this will help to avoid re-scanning the same image multiple times
 # and speed up the process
@@ -56,6 +58,9 @@ def scan_images(kubeconfig, all_namespaces, namespace, selector, log_level, scan
         load_kube_config(kubeconfig)
     else:
         load_kube_config()
+    
+    # Check if Trivy is installed
+    look_for_trivy()
     
     # Update trivy db before running the scan
     trivy_db_update()
