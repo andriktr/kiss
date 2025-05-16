@@ -1,0 +1,41 @@
+template: |
+  ## Changes
+
+  $CHANGES
+
+name-template: 'v$NEXT_PATCH_VERSION'
+tag-template: 'v$NEXT_PATCH_VERSION'
+categories:
+  - title: '🚀 Features'
+    labels:
+      - 'feature'
+      - 'new feature'
+  - title: '🐛 Bug Fixes'
+    labels:
+      - 'bug'
+      - 'bug fix'
+  - title: '💥 Breaking Changes'
+    labels:
+      - 'breaking change'
+  - title: '📝 Documentation'
+    labels:
+      - 'documentation'
+      - 'documentation update'
+  - title: '🛡️ Security'
+    labels:
+      - 'security'
+      - 'security fix'
+  - title: '🔨 Refactoring'
+    labels:
+      - 'refactor'
+  - title: '🧪 Tests'
+    labels:
+      - 'test'
+  - title: '🧹 Chores'
+    labels:
+      - 'chore'
+  - title: '🔄 Other'
+    labels:
+      - 'other'
+change-template: '- $TITLE (#$NUMBER) @$AUTHOR'
+no-changes-template: '- No changes'
