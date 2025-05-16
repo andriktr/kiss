@@ -1,9 +1,21 @@
-# KISS (Kubernetes Image Security Scanning)
+# KISS
 
-KISS your cluster with security!
+<p align="center"><img src="images/kiss-logo.png" alt="KISS Logo" width="300"/></p>
+
+## Table of Contents
+
+## Description
 
 This repository contains a source code of KISS application, which is a tool for scanning container images for vulnerabilities.
 KISS uses Trivy as a vulnerability scanner and provides ability to scan whole namespace(-s) or entire cluster images for vulnerabilities.
+
+## Prerequisites
+
+## Installation
+
+## Usage
+
+## Current and Planned Features
 
 Feature | Status
 --- | ---
