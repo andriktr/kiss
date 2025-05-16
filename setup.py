@@ -8,15 +8,7 @@ setup(
     install_requires=[
         "click",
         "kubernetes",
-        "subprocess",
-        "json",
         "tabulate",
-        "shutil",
-        "logging",
-        "sys",
-        "time",
-        "concurrent.futures",
-        "threading",
     ],
     entry_points={
         "console_scripts": [

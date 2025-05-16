@@ -1,0 +1,58 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+    paths-ignore:
+      - '.github/workflows/**'
+      - '.github/release_drafter.yml'
+      - 'README.md'
+      - 'LICENSE'
+      - 'CHANGELOG.md'
+      - 'images/**'
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: pip install pyinstaller click kubernetes tabulate
+      - name: Build binary
+        run: |
+          pyinstaller --onefile --name kiss app/main.py
+      - name: Archive binary
+        if: runner.os != 'Windows'
+        run: tar -czvf kiss_${{ runner.os }}.tar.gz -C dist kiss
+      - name: Archive binary (Windows)
+        if: runner.os == 'Windows'
+        run: Compress-Archive -Path dist\kiss.exe -DestinationPath kiss_windows.zip
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: kiss-${{ runner.os }}
+          path: |
+            kiss_*.tar.gz
+            kiss_windows.zip
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: ./dist
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ./dist/**/*
+          draft: false
+          generate_release_notes: true
