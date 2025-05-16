@@ -4,6 +4,15 @@
 
 ## Table of Contents
 
+- [KISS](#kiss)
+  - [Table of Contents](#table-of-contents)
+  - [Description](#description)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+  - [Usage](#usage)
+  - [Current and Planned Features](#current-and-planned-features)
+  - [License](#license)
+
 ## Description
 
 This repository contains a source code of KISS application, which is a tool for scanning container images for vulnerabilities.
@@ -30,3 +39,9 @@ Add option for parallel scanning | :white_check_mark:
 Add option to scan all namespaces | :white_check_mark:
 Add option select namespace by label | :white_check_mark:
 Add option to select multiple namespaces | :white_check_mark:
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is not affiliated with or endorsed by the Kubernetes project or the Cloud Native Computing Foundation (CNCF).
+The KISS application is an independent tool developed for educational and research purposes. Use it at your own risk.
