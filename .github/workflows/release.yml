@@ -12,6 +12,9 @@ on:
       - 'CHANGELOG.md'
       - 'images/**'
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ${{ matrix.os }}
