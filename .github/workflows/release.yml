@@ -32,19 +32,30 @@ jobs:
       - name: Build binary
         run: |
           pyinstaller --onefile --name kiss app/main.py
-      - name: Archive binary
+      - name: Archive binary (Linux/macOS)
         if: runner.os != 'Windows'
-        run: tar -czvf kiss_${{ runner.os }}.tar.gz -C dist kiss
+        run: |
+          tar -czvf kiss_${{ github.ref_name }}_${{ runner.os }}.tar.gz -C dist kiss
       - name: Archive binary (Windows)
         if: runner.os == 'Windows'
-        run: Compress-Archive -Path dist\kiss.exe -DestinationPath kiss_windows.zip
+        run: |
+          Compress-Archive -Path dist\kiss.exe -DestinationPath kiss_${{ github.ref_name }}_windows.zip
+      - name: Generate checksums
+        run: |
+          for file in kiss_${{ github.ref_name }}_*; do
+            if [[ -f "$file" ]]; then
+              shasum -a 256 "$file" > "$file.sha256"
+            fi
+          done
+        shell: bash
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: kiss-${{ runner.os }}
           path: |
-            kiss_*.tar.gz
-            kiss_windows.zip
+            kiss_${{ github.ref_name }}_*.tar.gz
+            kiss_${{ github.ref_name }}_*.zip
+            kiss_${{ github.ref_name }}_*.sha256
 
   release:
     needs: build
