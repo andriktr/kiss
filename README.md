@@ -70,15 +70,16 @@ To install on WINDOWS:
 
 ## Usage
 
-Use `kiss --help` to see the list of available commands and options.
+Use `kiss --help` to see the list of available commands, options and descriptions.
 
 Current version of KISS supports the following commands:
 
-kiss 
+- `kiss show-images` - show all images running in specified namespace(-s).
+- `kiss scan-images` - scan all images running in specified namespace(-s).
 
-```bash
+Here is a short video tutorial showing how to KISS:
 
-## Current and Planned Features
+## Planned Features
 
 Feature | Status
 --- | ---
@@ -88,15 +89,9 @@ Add option to view only images with specific severity | :x:
 Add detailed reports | :x:
 Add option for custom output format | :x:
 Add option to scan only specific namespace | :white_check_mark:
-Add option to just show running images | :white_check_mark:
-Add option for parallel scanning | :white_check_mark:
-Add option to scan all namespaces | :white_check_mark:
-Add option select namespace by label | :white_check_mark:
-Add option to select multiple namespaces | :white_check_mark:
 
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 This project is not affiliated with or endorsed by the Kubernetes project or the Cloud Native Computing Foundation (CNCF).
 The KISS application is an independent tool developed for educational and research purposes. Use it at your own risk.
-
