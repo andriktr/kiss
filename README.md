@@ -79,6 +79,10 @@ Current version of KISS supports the following commands:
 
 Here is a short video tutorial showing how to KISS:
 
+
+https://github.com/user-attachments/assets/00603aeb-37da-4763-889c-0c94ae26d529
+
+
 ## Planned Features
 
 Feature | Status
