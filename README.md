@@ -21,9 +21,12 @@ KISS is a command line tool for showing and scanning container images for vulner
 This repository contains a source code of KISS application.
 KISS is a command line tool for showing and scanning container images for vulnerabilities running in Kubernetes clusters.
 
+If images you are planning to scan are stored in private container registry, you need to make sure that trivy can access them.
+Please refer to the following trivy documentation for more information on how to configure trivy to access private container registries: [https://trivy.dev/v0.62/docs/advanced/private-registries/](https://trivy.dev/v0.62/docs/advanced/private-registries/)
+
 ## What KISS does
 
-- uses Trivy as a vulnerability scanner and extends its functionality to provide ability to scan whole namespace(-s) at once. 
+- uses Trivy as a vulnerability scanner and extends a bit its functionality to provide ability to scan whole namespace(-s) at once.
 - automatically detecting all container images (including init or ephemeral containers) running in specified namespace(-s).
 - uses caching to avoid scanning same image multiple times.
 - uses configurable parallel processing of images and namespaces to speed up the process of scanning images.
@@ -46,7 +49,8 @@ To install KISS on debian/ubuntu use the following commands:
 ```bash
 ## Define the version of KISS you want to install
 export KISS_VERSION=0.1.0
-curl https://github.com/andriktr/kiss/releases/download/v$KISS_VERSION/kiss_Linux.tar.gz | tar -xz
+wget https://github.com/andriktr/kiss/releases/download/v$KISS_VERSION/kiss_Linux.tar.gz
+tar -xzf kiss_Linux.tar.gz
 sudo mv kiss /usr/local/bin/kiss
 sudo chmod +x /usr/local/bin/kiss
 ```
@@ -56,7 +60,8 @@ To install on  MACOS use the following commands:
 ```bash
 ## Define the version of KISS you want to install
 export KISS_VERSION=0.1.0
-curl https https://github.com/andriktr/kiss/releases/download/v$KISS_VERSION/kiss_macOS.tar.gz | tar -xz
+wget https://github.com/andriktr/kiss/releases/download/v$KISS_VERSION/kiss_macOS.tar.gz
+tar -xzf kiss_macOS.tar.gz
 sudo mv kiss /usr/local/bin/kiss
 sudo chmod +x /usr/local/bin/kiss
 ```
@@ -85,12 +90,7 @@ https://github.com/user-attachments/assets/00603aeb-37da-4763-889c-0c94ae26d529
 
 Feature | Status
 --- | ---
-Add sort by severity | :x:
-Add option to hide images with no vulnerabilities | :x:
-Add option to view only images with specific severity | :x:
-Add detailed reports | :x:
-Add option for custom output format | :x:
-Add option to scan only specific namespace | :white_check_mark:
+Add new `kiss report` command which will allow to output whole cluster images as one report | :x:
 
 ## License
 
