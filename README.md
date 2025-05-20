@@ -13,7 +13,7 @@ KISS is a command line tool for showing and scanning container images for vulner
   - [Prerequisites](#prerequisites)
   - [Installation](#installation)
   - [Usage](#usage)
-  - [Current and Planned Features](#current-and-planned-features)
+  - [Planned Features](#planned-features)
   - [License](#license)
 
 ## Description
