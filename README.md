@@ -1,6 +1,6 @@
 # KISS
 
-KISS is a command line tool for showing and scanning container images for vulnerabilities running in Kubernetes clusters.
+KISS is a command line tool which allows you to quickly list running container images in your Kubernetes cluster and scan them for vulnerabilities.
 
 <p align="center"><img src="images/kiss-logo.png" alt="KISS Logo" width="300"/></p>
 
@@ -90,7 +90,7 @@ https://github.com/user-attachments/assets/00603aeb-37da-4763-889c-0c94ae26d529
 
 Feature | Status
 --- | ---
-Add new `kiss report` command which will allow to output whole cluster images as one report | :x:
+Add new `kiss report` command which will allow to output whole cluster images as one report in different formats | :x:
 
 ## License
 
