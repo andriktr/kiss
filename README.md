@@ -53,6 +53,7 @@ wget https://github.com/andriktr/kiss/releases/download/v$KISS_VERSION/kiss_Linu
 tar -xzf kiss_Linux.tar.gz
 sudo mv kiss /usr/local/bin/kiss
 sudo chmod +x /usr/local/bin/kiss
+rm kiss_Linux.tar.gz
 ```
 
 To install on  MACOS use the following commands:
@@ -64,6 +65,7 @@ wget https://github.com/andriktr/kiss/releases/download/v$KISS_VERSION/kiss_macO
 tar -xzf kiss_macOS.tar.gz
 sudo mv kiss /usr/local/bin/kiss
 sudo chmod +x /usr/local/bin/kiss
+rm kiss_macOS.tar.gz
 ```
 
 To install on WINDOWS:
